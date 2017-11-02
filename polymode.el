@@ -7,7 +7,7 @@
 ;; Version: 1.0
 ;; Package-Requires: ((emacs "24"))
 ;; URL: https://github.com/vitoshka/polymode
- ;; Keywords: emacs
+;; Keywords: emacs
 ;;
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -42,6 +42,7 @@
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
+
 
 (require 'polymode-core)
 (require 'polymode-classes)
@@ -130,8 +131,7 @@ Return, how many chucks actually jumped over."
       (pm-switch-to-buffer))
     sofar))
 
-;;fixme: problme with long chunks .. point is recentered
-;;todo: merge into next-chunk
+;; FIXME: Problem with long chunks; point is re-centered.
 (defun polymode-previous-chunk (&optional N)
   "Go COUNT chunks backwards .
 Return, how many chucks actually jumped over."
@@ -214,6 +214,35 @@ Return, how many chucks actually jumped over."
          (pm-narrow-to-span)))
       (_ (pm-narrow-to-span)))))
 
+(defun pm--mode-for-span (span)
+  "Return the major mode that corresponding to SPAN."
+  (let ((obj (car (last span))))
+    (pm--get-chunkmode-mode
+      (case (eieio-object-class obj)
+        ('pm-polymode-multi-auto (pm--get-multi-chunk obj span))
+        ('pm-hbtchunkmode-auto (pm--get-multi-chunk obj span))
+        ('pm-bchunkmode obj)
+        ('pm-hbtchunkmode obj))
+      'body)))
+
+(defun pm-eval-from-here (func)
+  "Evaluate FUNC over all 'body' spans up to the current point.
+Based on https://github.com/yamad/polymode/blob/25f4a2c67cc7d3390454ebf592fe19c4970506cd/polymode-methods.el"
+  (interactive "a")
+  (save-excursion
+    (pm-map-over-spans
+      '(lambda ()
+        (save-restriction
+          (progn
+            (pm-narrow-to-span *span*)
+            ;; Could also filter on types like `*-mode'.
+            ;; (when (memq (pm--mode-for-span *span*) types)
+            (when (eq 'body (nth 0 *span*))
+              (funcall func)
+              )
+            )))
+      (point-min) (point) nil nil nil t))
+  )
 
 (defun polymode-mark-or-extend-chunk ()
   (interactive)

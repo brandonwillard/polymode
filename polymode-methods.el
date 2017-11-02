@@ -96,10 +96,9 @@
     (current-buffer)))
 
 (defun pm--common-setup (&optional buffer)
-  ;; General buffer setup. Should work for indirect and base buffers. Assumes
-  ;; that the buffer was fully prepared and objects like pm/polymode and
-  ;; pm/chunkmode have been initialised. Return the BUFFER.
-
+  "General buffer setup.  Should work for indirect and base buffers.  Assumes
+that the buffer was fully prepared and objects like `pm/polymode' and
+`pm/chunkmode' have been initialized. Return the BUFFER."
   (with-current-buffer (or buffer (current-buffer))
 
     ;; INDENTATION
@@ -150,6 +149,7 @@ Parents' hooks are run first."
       (run-hooks 'funs))))
 
 (defvar-local pm--killed-once nil)
+
 (defun pm--kill-indirect-buffer ()
   ;; find-alternate-file breaks (https://github.com/vspinu/polymode/issues/79)
   (let ((base (buffer-base-buffer)))
@@ -366,8 +366,8 @@ this method to work correctly, SUBMODE's class should define
       (visual-line-mode 1))))
 
 (defmethod pm-select-buffer ((config pm-polymode-multi-auto) &optional span)
-  ;; :fixme: pm-get-span on multi configs returns config as last object of
-  ;; span. This unnatural and confusing. Same problem with pm-indent-line
+  ;; FIXME: `pm-get-span' on multi configs returns config as last object of
+  ;; span. This unnatural and confusing. Same problem with `pm-indent-line'.
   (pm-select-buffer (pm--get-multi-chunk config span) span))
 
 (defun pm--get-multi-chunk (config span)
@@ -588,8 +588,9 @@ sent to the new mode for syntax highlighting."
     (if (re-search-forward reg nil t)
         (cons (match-beginning 0) (match-end 0)))))
 
-;; fixme: there should be a simpler way... check the code and document
+;; FIXME: There should be a simpler way.  Check the code and document.
 (defun pm--span-at-point-fun-fun (hd-matcher tl-matcher)
+  "Match spans with header and tail matcher functions?"
   (save-excursion
     (let ((pos (point))
           (posh (funcall hd-matcher -1)))
@@ -620,7 +621,9 @@ sent to the new mode for syntax highlighting."
                       (if (and (<= (car posh1) pos)
                                (< pos (cdr posh1)))
                           (list 'head (car posh1) (cdr posh1))
-                        (list nil (cdr posh) (car posh1))))) ;; posh is point min, fixme: not true anymore?
+                        ;; `posh' is `point-min'.
+                        ;; FIXME: Not true anymore?
+                        (list nil (cdr posh) (car posh1)))))
                 (goto-char (cdr post))
                 (let ((posh1 (or (funcall hd-matcher 1)
                                  (cons (point-max) (point-max)))))
@@ -631,11 +634,11 @@ sent to the new mode for syntax highlighting."
                     (list nil (cdr post) (car posh1))))))))))))
 
 (defun pm--span-at-point-reg-reg (head-matcher tail-matcher)
-  ;; Guaranteed to produce non-0 length spans. If no span has been found
-  ;; (head-matcher didn't match) return (nil (point-min) (point-max)).
-
-  ;; xxx1 relate to the first ascending search
-  ;; xxx2 relate to the second descending search
+  "Match spans with header and tail regexes?
+Guaranteed to produce non-0 length spans.  If no span has been found
+`(head-matcher didn't match)' return `(nil (point-min) (point-max))'."
+  ;; `xxx1' relate to the first ascending search
+  ;; `xxx2' relate to the second descending search
   (save-excursion
     (let* ((pos (point))
 
