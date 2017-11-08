@@ -6,7 +6,7 @@
 ;; Maintainer: Brandon T. Willard
 ;; Copyright (C) 2017-2017, Brandon T. Willard, all rights reserved.
 ;; Version: 1.0
-;; URL: https://github.com/brandonwillard/spacemacs-custom
+;; URL: https://github.com/brandonwillard/polymode
 ;; Keywords: emacs
 ;;
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -57,59 +57,25 @@
 
 ;;;###autoload (autoload 'poly-noweb+python-mode "poly-python")
 (define-polymode poly-noweb+python-mode pm-poly/noweb+python :lighter " PM-texw")
-;;(add-hook 'noweb+python-mode-hook 'poly-noweb+python-mode)
 
-;; or as in https://emacs.stackexchange.com/a/20446...
-;; (defcustom pm-inner/python
-;;   (pm-hbtchunkmode "python"
-;;                    :mode 'python-mode
-;;                    :head-reg  "\\\\begin{pycode}"
-;;                    :tail-reg  "\\\\end{pycode}")
-;;   "python typical chunk."
-;;   :group 'innermodes
-;;   :type 'object)
 
-;; (defcustom pm-poly/latex-python
-;;   (pm-polymode-one "latex-python"
-;;                    :hostmode 'pm-host/latex
-;;                    :innermode 'pm-inner/python)
-;;   "latex-python typical polymode."
-;;   :group 'polymodes
-;;   :type 'object)
+;; Pweave
 
-;; (define-polymode poly-latex+python-mode pm-poly/latex-python)
-;; (add-to-list 'auto-mode-alist '("\\.tex$" . poly-latex+python-mode))
+(if (executable-find "pweave")
+    (progn
+      (defcustom pm-weaver/pweave
+        (pm-shell-weaver "pweave"
+                         :from-to
+                         '(("latex" "\\.[tT]exw\\'" "tex" "LaTeX" "pweave -i noweb -o %o %i")
+                           ("markdown" "\\.[pP]?md]\\'" "md" "Markdown" "pweave -i markdown -o %o %i")
+                           ))
+        "Shell Pweave weaver."
+        :group 'polymode-weave
+        :type 'object)
 
-;; Pweave 
-;; Also, see examples here: https://github.com/vspinu/polymode/blob/master/modes/poly-R.el
-;; TODO: Check for existence of `pweave' command.  E.g.
-;; (defun spacemacs/pweave-executable-find (command)
-;;   "Find executable taking pyenv shims into account."
-;;   (if (executable-find "pyenv")
-;;       (progn
-;;         (let ((pyenv-string (shell-command-to-string (concat "pyenv which " command))))
-;;           (unless (string-match "not found" pyenv-string)
-;;             pyenv-string)))
-;;     (executable-find command)))
-;; (let ((trace (cond ((spacemacs/pyenv-executable-find "pweave") "import wdb; wdb.set_trace()")
-;;                    ((spacemacs/pyenv-executable-find "ipdb") "import ipdb; ipdb.set_trace()")
-;;                    ((spacemacs/pyenv-executable-find "pudb") "import pudb; pudb.set_trace()")
-;;                    ((spacemacs/pyenv-executable-find "ipdb3") "import ipdb; ipdb.set_trace()")
-;;                    ((spacemacs/pyenv-executable-find "pudb3") "import pudb; pudb.set_trace()")
-;;                    (t "import pdb; pdb.set_trace()")))
-(defcustom pm-weaver/pweave
-  (pm-shell-weaver "pweave"
-                   :from-to
-                   '(("latex" "\\.[tT]exw\\'" "tex" "LaTeX" "pweave -i noweb -o %o %i")
-                     ("markdown" "\\.[pP]?md]\\'" "md" "Markdown" "pweave -i markdown -o %o %i")
-                     ))
-  "Shell Pweave weaver."
-  :group 'polymode-weave
-  :type 'object)
-
-(polymode-register-weaver pm-weaver/pweave nil
-                          pm-poly/noweb+python
-                          ;; pm-poly/markdown
-                          )
+      (polymode-register-weaver pm-weaver/pweave nil
+                                pm-poly/noweb+python
+                                ;; pm-poly/markdown
+                                )))
 
 (provide 'poly-python)

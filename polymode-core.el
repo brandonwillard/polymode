@@ -124,7 +124,7 @@ relying on `pm-get-span' might not function correctly.")
 
 ;;; CORE
 (defsubst pm-base-buffer ()
-  ;; fixme: redundant with :base-buffer
+  ;; FIXME: Redundant with `:base-buffer'.
   "Return base buffer of current buffer, or the current buffer if it's direct."
   (or (buffer-base-buffer (current-buffer))
       (current-buffer)))
