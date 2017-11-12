@@ -225,7 +225,7 @@ Return, how many chucks actually jumped over."
         ('pm-hbtchunkmode obj))
       'body)))
 
-(defun pm-eval-from-here (func)
+(defun pm--eval-from-here (func)
   "Evaluate FUNC over all 'body' spans up to the current point.
 Based on https://github.com/yamad/polymode/blob/25f4a2c67cc7d3390454ebf592fe19c4970506cd/polymode-methods.el"
   (interactive "a")

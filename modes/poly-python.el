@@ -31,6 +31,7 @@
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'polymode)
+(require 'poly-noweb)
 
 (defcustom pm-poly/python
   (pm-polymode-one "python"
@@ -40,8 +41,6 @@
   :group 'polymodes
   :type 'object)
 
-;; NOWEB
-(require 'poly-noweb)
 (defcustom pm-poly/noweb+python
   (clone pm-poly/noweb :innermode 'pm-inner/noweb+python)
   "Noweb for Python configuration"
@@ -57,9 +56,6 @@
 
 ;;;###autoload (autoload 'poly-noweb+python-mode "poly-python")
 (define-polymode poly-noweb+python-mode pm-poly/noweb+python :lighter " PM-texw")
-
-
-;; Pweave
 
 (if (executable-find "pweave")
     (progn
