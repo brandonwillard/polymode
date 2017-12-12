@@ -272,9 +272,9 @@ that are not known in advance. Examples are org-mode and markdown.")
 
 (defclass pm-bchunkmode (pm-chunkmode)
   ()
-  "Representation of the body-only chunkmodes. Body-only
-  chunkmodes are commonly used as host modes. For example for a
-  the web-mdoe the hostmode is `html-mode', for nowweb mode the
+  "Representation of the body-only chunk modes. Body-only
+  chunk modes are commonly used as host modes. For example for a
+  web mode the host mode is `html-mode', for nowweb mode the
   host mode is usually `latex-mode', etc.")
 
 (defclass pm-hbtchunkmode (pm-chunkmode)

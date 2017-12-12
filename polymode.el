@@ -268,7 +268,7 @@ Based on https://github.com/yamad/polymode/blob/25f4a2c67cc7d3390454ebf592fe19c4
 
 (defun polymode-post-command-select-buffer ()
   "Select the appropriate (indirect) buffer corresponding to point's context.
-This funciton is placed in local `post-command-hook'."
+This function is placed in local `post-command-hook'."
   (when (and pm-allow-post-command-hook
              polymode-mode
              pm/chunkmode)
